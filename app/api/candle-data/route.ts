@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   if (symbol === 'ETH/USDT') basePrice = 1800
   if (symbol === 'BNB/USDT') basePrice = 300
   if (symbol === 'XRP/USDT') basePrice = 0.5
-  // ... etc
+  // ...
 
   const candles = []
   for (let i = 0; i < dataCount; i++) {
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     // open
     const open = basePrice
-    // 변동폭을 ±2%로 크게 잡아, 캔들 본체가 눈에 띄도록
+    // 변동폭: ±2%로 크게
     const randomPercent = 0.02
     const closeShift = (Math.random() - 0.5) * randomPercent * basePrice
     const close = parseFloat((open + closeShift).toFixed(2))
@@ -34,7 +34,14 @@ export async function GET(request: Request) {
     // 거래량은 0 ~ 100 사이
     const volume = parseFloat((Math.random() * 100).toFixed(2))
 
-    candles.push({ time, open, high, low, close, volume })
+    candles.push({
+      time,
+      open,
+      high,
+      low,
+      close,
+      volume,
+    })
 
     // 다음 캔들의 open = 현재 close
     basePrice = close

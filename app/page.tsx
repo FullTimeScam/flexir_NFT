@@ -18,7 +18,7 @@ export default function Home() {
         minSize={[200, 100]}
         gutterSize={6}
       >
-        {/* 상단을 다시 좌/우 분할: 왼쪽 70%(차트), 오른쪽 30%(오더북/주문) */}
+        {/* 상단을 다시 좌/우 분할: 왼쪽 70%(차트), 오른쪽 30%(오더북+주문) */}
         <Split
           className="flex h-full"
           direction="horizontal"
@@ -33,7 +33,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 오른쪽 패널 -> 상/하 분할: 오더북 60%, 주문 40% */}
+          {/* 오른쪽 패널 -> 상/하 분할 (오더북 vs 주문) */}
           <Split
             className="flex flex-col h-full"
             direction="vertical"
@@ -47,7 +47,7 @@ export default function Home() {
                 <OrderBook />
               </div>
             </div>
-            {/* 주문 입력 */}
+            {/* 주문창 */}
             <div className="p-2">
               <div className="h-full bg-white rounded shadow p-4">
                 <OrderInput />
@@ -56,7 +56,7 @@ export default function Home() {
           </Split>
         </Split>
 
-        {/* 하단 탭 (오더/포지션/히스토리) */}
+        {/* 하단 탭 (오더 목록, 포지션, 히스토리) */}
         <div className="p-2">
           <div className="h-full bg-white rounded shadow p-4">
             <BottomTabs />

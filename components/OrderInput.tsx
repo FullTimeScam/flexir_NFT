@@ -14,7 +14,7 @@ export default function OrderInput() {
   }
 
   const handleConfirm = () => {
-    alert(`주문 완료: ${orderType} / Price: ${price}, Qty: ${quantity}`)
+    alert(`주문 완료: ${orderType} | Price: ${price}, Qty: ${quantity}`)
     setIsModalOpen(false)
     setPrice('')
     setQuantity('')

@@ -18,9 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* 오른쪽: 탑바 + 메인 */}
         <div className="flex flex-col w-full h-full">
           <TopBar />
-          <div className="flex-1 overflow-hidden">
-            {children}
-          </div>
+          <div className="flex-1 overflow-hidden">{children}</div>
         </div>
       </body>
     </html>

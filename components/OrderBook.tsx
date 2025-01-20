@@ -52,7 +52,7 @@ export default function OrderBook() {
       </div>
 
       <div className="flex-1 overflow-auto flex flex-col">
-        {/* 매도 asks */}
+        {/* 매도 */}
         {asksWithTotal.map((ask, i) => {
           const depthPct = (ask.total / totalAsks) * 100
           return (
@@ -72,7 +72,7 @@ export default function OrderBook() {
 
         <div className="border-t border-gray-300 my-1" />
 
-        {/* 매수 bids */}
+        {/* 매수 */}
         {bidsWithTotal.map((bid, i) => {
           const depthPct = (bid.total / totalBids) * 100
           return (

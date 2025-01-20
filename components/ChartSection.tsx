@@ -10,7 +10,7 @@ import {
 } from 'lightweight-charts'
 
 type Candle = {
-  time: number // timestamp in seconds
+  time: number
   open: number
   high: number
   low: number
@@ -18,7 +18,7 @@ type Candle = {
   volume: number
 }
 
-// 드롭다운용 심볼 목록
+// 심볼 드롭다운에 표시할 목록
 const SYMBOL_LIST = [
   'FLEX/USDT',
   'BTC/USDT',
@@ -32,6 +32,7 @@ const SYMBOL_LIST = [
   'DOT/USDT',
 ]
 
+// 심볼 및 24h 정보 + 드롭다운
 function SymbolInfoBar({
   selectedSymbol,
   setSelectedSymbol,
@@ -47,7 +48,6 @@ function SymbolInfoBar({
 
   return (
     <div className="relative flex justify-between items-center mb-2">
-      {/* 좌측: 심볼 선택 드롭다운 */}
       <div className="text-xl font-bold relative">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -78,7 +78,7 @@ function SymbolInfoBar({
         )}
       </div>
 
-      {/* 우측: 24h 정보 */}
+      {/* 24h 정보 (데모) */}
       <div className="flex gap-4 text-sm">
         <div>
           24h Change: <span className="text-green-500">{priceChange24h}</span>
@@ -93,12 +93,10 @@ export default function ChartSection() {
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartApiRef = useRef<IChartApi | null>(null)
 
-  // 심볼 상태
   const [selectedSymbol, setSelectedSymbol] = useState('FLEX/USDT')
-  // 캔들 데이터
   const [candles, setCandles] = useState<Candle[]>([])
 
-  // 심볼 변경 시 데이터 Fetch
+  // 심볼 바뀔 때마다 데이터 fetch
   useEffect(() => {
     fetch(`/api/candle-data?symbol=${encodeURIComponent(selectedSymbol)}`)
       .then((res) => res.json())
@@ -110,14 +108,14 @@ export default function ChartSection() {
       .catch(console.error)
   }, [selectedSymbol])
 
-  // 차트 생성/업데이트
+  // 차트 생성/갱신
   useEffect(() => {
     if (!chartContainerRef.current || candles.length === 0) return
 
-    // 차트 생성
-    const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: chartContainerRef.current.clientHeight,
+    const container = chartContainerRef.current
+    const chart = createChart(container, {
+      width: container.clientWidth,
+      height: container.clientHeight,
       layout: {
         background: { color: '#ffffff' },
         textColor: '#333',
@@ -129,12 +127,8 @@ export default function ChartSection() {
       crosshair: {
         mode: CrosshairMode.Normal,
       },
-      rightPriceScale: {
-        borderVisible: false,
-      },
-      timeScale: {
-        borderVisible: false,
-      },
+      rightPriceScale: { borderVisible: false },
+      timeScale: { borderVisible: false },
     })
 
     // 캔들 시리즈
@@ -148,9 +142,14 @@ export default function ChartSection() {
 
     // 거래량 시리즈 (히스토그램)
     const volumeSeries = chart.addHistogramSeries({
-      priceFormat: { type: 'volume' },
       color: '#d2d2d2',
+      priceFormat: { type: 'volume' },
       priceScaleId: '',
+      // ↓↓↓ 이 부분을 constructor에서 제거하고 applyOptions로 옮김 ↓↓↓
+      // scaleMargins: { top: 0.8, bottom: 0 },
+    })
+    // 별도로 옵션 적용 (타입 충돌 방지)
+    volumeSeries.applyOptions({
       scaleMargins: { top: 0.8, bottom: 0 },
     })
 
@@ -171,7 +170,7 @@ export default function ChartSection() {
     }))
     volumeSeries.setData(volumeData)
 
-    // 범위 맞춤
+    // 화면에 맞추기
     chart.timeScale().fitContent()
 
     chartApiRef.current = chart
@@ -183,13 +182,13 @@ export default function ChartSection() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      {/* 심볼 & 24h 정보 바 */}
+      {/* 심볼 / 24h info */}
       <SymbolInfoBar
         selectedSymbol={selectedSymbol}
         setSelectedSymbol={setSelectedSymbol}
       />
 
-      {/* 차트 컨테이너 (z-0, relative) */}
+      {/* 차트 컨테이너: z-0 / relative */}
       <div className="flex-1 relative z-0" ref={chartContainerRef} />
     </div>
   )

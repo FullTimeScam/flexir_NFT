@@ -27,16 +27,10 @@ export default function Sidebar() {
 
       {/* 메뉴 목록 */}
       <nav className="flex flex-col gap-2 px-2">
-        <a
-          href="#"
-          className="flex items-center p-2 rounded hover:bg-gray-100"
-        >
+        <a href="#" className="flex items-center p-2 rounded hover:bg-gray-100">
           <span className="text-sm font-medium">포인트 마켓</span>
         </a>
-        <a
-          href="#"
-          className="flex items-center p-2 rounded hover:bg-gray-100"
-        >
+        <a href="#" className="flex items-center p-2 rounded hover:bg-gray-100">
           <span className="text-sm font-medium">NFT 마켓</span>
         </a>
       </nav>
