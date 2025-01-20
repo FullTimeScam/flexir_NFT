@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== (필수) react-split (Split.js) Gutter 스타일 ===== */
+.gutter {
+  background-color: #e5e7eb; /* Tailwind gray-200 정도 */
+  opacity: 0.7;
+}
+.gutter:hover {
+  opacity: 1.0;
+}
+/* 방향에 따른 커서 모양 */
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+}
+.gutter.gutter-vertical {
+  cursor: row-resize;
+}
