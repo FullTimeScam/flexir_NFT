@@ -18,7 +18,7 @@ type Candle = {
   volume: number
 }
 
-// 심볼 목록 예시
+// 심볼 드롭다운에 표시할 목록 (예시 10개)
 const SYMBOL_LIST = [
   'FLEX/USDT',
   'BTC/USDT',
@@ -32,7 +32,7 @@ const SYMBOL_LIST = [
   'DOT/USDT',
 ]
 
-// 드롭다운 + 24h 변동/볼륨 등 표시
+// 드롭다운 + 24h 변동/거래량 표시
 function SymbolInfoBar({
   selectedSymbol,
   setSelectedSymbol,
@@ -42,6 +42,7 @@ function SymbolInfoBar({
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
+  // 임시 값
   const priceChange24h = '+3.42%'
   const volume24h = '12,345.67'
 
@@ -56,6 +57,7 @@ function SymbolInfoBar({
           <span className="text-sm text-gray-500">▼</span>
         </button>
 
+        {/* 드롭다운 목록 */}
         {isDropdownOpen && (
           <div
             className="absolute z-50 mt-2 bg-white border border-gray-300 rounded shadow-lg max-h-48 overflow-y-auto"
@@ -77,6 +79,7 @@ function SymbolInfoBar({
         )}
       </div>
 
+      {/* 24h 정보 (예시) */}
       <div className="flex gap-4 text-sm">
         <div>
           24h Change: <span className="text-green-500">{priceChange24h}</span>
@@ -94,7 +97,7 @@ export default function ChartSection() {
   const [selectedSymbol, setSelectedSymbol] = useState('FLEX/USDT')
   const [candles, setCandles] = useState<Candle[]>([])
 
-  // 심볼 변경 시 데이터 재조회
+  // 심볼 변경 시, /api/candle-data?symbol=... 재조회
   useEffect(() => {
     fetch(`/api/candle-data?symbol=${encodeURIComponent(selectedSymbol)}`)
       .then((res) => res.json())
@@ -106,7 +109,7 @@ export default function ChartSection() {
       .catch(console.error)
   }, [selectedSymbol])
 
-  // 차트 생성 / 업데이트
+  // 차트 생성/갱신
   useEffect(() => {
     if (!chartContainerRef.current || candles.length === 0) return
 
@@ -129,7 +132,7 @@ export default function ChartSection() {
       timeScale: { borderVisible: false },
     })
 
-    // 캔들 시리즈
+    // 메인 캔들 시리즈
     const candleSeries = chart.addCandlestickSeries({
       upColor: '#0ecc83',
       downColor: '#ff4976',
@@ -138,20 +141,23 @@ export default function ChartSection() {
       wickDownColor: '#ff4976',
     })
 
-    // 히스토그램(거래량) 시리즈
+    // 거래량(히스토그램) 시리즈
     const volumeSeries = chart.addHistogramSeries({
       color: '#d2d2d2',
       priceFormat: { type: 'volume' },
       priceScaleId: '',
     })
 
-    // ▲ 여기서 scaleMargins를 직접 applyOptions 하면 TS 에러
-    // 대신 해당 시리즈의 priceScale()에 적용:
-    volumeSeries.priceScale().applyOptions({
-      scaleMargins: { top: 0.8, bottom: 0 },
+    // ★ key fix:
+    //   HistogramSeries에 'scaleMargins'를 직접 넣으면 타입 에러.
+    //   → 아래처럼 priceScale 옵션에 넣으면 정상 동작.
+    volumeSeries.applyOptions({
+      priceScale: {
+        scaleMargins: { top: 0.8, bottom: 0 },
+      },
     })
 
-    // 데이터 세팅
+    // 데이터 입력
     const candleData: CandlestickData[] = candles.map((c) => ({
       time: c.time,
       open: c.open,
@@ -164,11 +170,11 @@ export default function ChartSection() {
     const volumeData: BarData[] = candles.map((c) => ({
       time: c.time,
       value: c.volume,
+      // 오름(초록) / 내림(빨강)에 따라 색상
       color: c.close > c.open ? 'rgba(14,204,131,0.2)' : 'rgba(255,73,118,0.2)',
     }))
     volumeSeries.setData(volumeData)
 
-    // 범위 맞춤
     chart.timeScale().fitContent()
 
     chartApiRef.current = chart
@@ -180,13 +186,13 @@ export default function ChartSection() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      {/* 심볼 / 24h */}
+      {/* 심볼 드롭다운 / 24h 정보 */}
       <SymbolInfoBar
         selectedSymbol={selectedSymbol}
         setSelectedSymbol={setSelectedSymbol}
       />
 
-      {/* 차트 컨테이너 (z-0, relative) */}
+      {/* 차트 컨테이너 (z-0: 드롭다운이나 모달이 위로) */}
       <div className="flex-1 relative z-0" ref={chartContainerRef} />
     </div>
   )
