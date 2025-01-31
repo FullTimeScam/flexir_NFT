@@ -1,31 +1,30 @@
-"use client"
+"use client";
 
-import React from 'react'
+import React from "react";
 
-type Order = { price: number; amount: number }
+type Order = { price: number; amount: number };
 interface Props {
-  onPriceClick?: (price: number) => void
+  onPriceClick?: (price: number) => void;
 }
 
 const asksData: Order[] = [
-  { price: 125, amount: 72 },
-  { price: 126, amount: 65 },
-  { price: 127, amount: 55 },
-  { price: 128, amount: 45 },
-]
+  { price: 1.25, amount: 50 },
+  { price: 1.26, amount: 40 },
+  { price: 1.27, amount: 30 },
+  { price: 1.28, amount: 20 },
+];
 const bidsData: Order[] = [
-  { price: 124, amount: 72 },
-  { price: 123.8, amount: 61 },
-  { price: 123, amount: 51 },
-  { price: 122, amount: 41 },
-]
+  { price: 1.24, amount: 41 },
+  { price: 1.238, amount: 30 },
+  { price: 1.229, amount: 22 },
+  { price: 1.22, amount: 19 },
+];
 
 export default function OrderBook({ onPriceClick }: Props) {
   return (
     <div className="h-full flex flex-col text-sm">
       <h2 className="font-bold mb-1">Order Book</h2>
       <div className="flex-1 flex">
-        {/* 매도 */}
         <div className="w-1/2 border-r pr-1">
           <div className="font-medium mb-1">Asks</div>
           {asksData.map((ask, i) => (
@@ -39,7 +38,6 @@ export default function OrderBook({ onPriceClick }: Props) {
             </div>
           ))}
         </div>
-        {/* 매수 */}
         <div className="w-1/2 pl-1">
           <div className="font-medium mb-1">Bids</div>
           {bidsData.map((bid, i) => (
@@ -55,5 +53,5 @@ export default function OrderBook({ onPriceClick }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }

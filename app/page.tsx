@@ -1,50 +1,49 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import Split from 'react-split'
-
-import ChartSection from '@/components/ChartSection'
-import OrderBook from '@/components/OrderBook'
-import OrderInput from '@/components/OrderInput'
-import BottomTabs from '@/components/BottomTabs'
+import React, { useState } from "react";
+import Split from "react-split";
+import ChartSection from "@/components/ChartSection";
+import OrderBook from "@/components/OrderBook";
+import OrderInput from "@/components/OrderInput";
+import BottomTabs from "@/components/BottomTabs";
 
 export default function Home() {
-  // ---- 주문 상태 ----
-  const [orderType, setOrderType] = useState<"LIMIT" | "STOP_LIMIT">("LIMIT")
-  const [limitPrice, setLimitPrice] = useState("")
-  const [stopPrice, setStopPrice] = useState("")
-  const [amount, setAmount] = useState("")
-  const [total, setTotal] = useState("")
-  const [sliderValue, setSliderValue] = useState(0)
+  const [orderType, setOrderType] = useState<"LIMIT" | "STOP_LIMIT">("LIMIT");
+  const [limitPrice, setLimitPrice] = useState("");
+  const [stopPrice, setStopPrice] = useState("");
+  // 수량(Amount)은 정수
+  const [amount, setAmount] = useState("");
+  const [total, setTotal] = useState("");
+  const [sliderValue, setSliderValue] = useState(0);
 
-  // **어느 인풋이 포커스되었는지** (stop or limit)
-  const [focusedInput, setFocusedInput] = useState<"stop" | "limit" | null>(null)
+  // 어느 인풋이 포커스인지 (stop vs limit)
+  const [focusedInput, setFocusedInput] = useState<"stop" | "limit" | null>(
+    null
+  );
 
-  const balance = 1000
+  const balance = 1000;
 
-  // 오더북 가격 클릭
+  // 오더북에서 가격 클릭
   const handleOrderBookPriceClick = (price: number) => {
     if (orderType === "STOP_LIMIT") {
-      // stop-limit 모드일 때: focusedInput 체크
+      // stop-limit 모드
       if (focusedInput === "stop") {
-        // stopPrice 업데이트
-        setStopPrice(String(price))
+        setStopPrice(String(price));
       } else {
-        // limitPrice 업데이트
-        setLimitPrice(String(price))
-        // price 바뀌면 total = price * amount
-        const p = parseFloat(String(price)) || 0
-        const a = parseFloat(amount) || 0
-        setTotal((p * a).toFixed(2))
+        setLimitPrice(String(price));
+        // total = price * amount
+        const p = parseFloat(String(price)) || 0;
+        const a = parseInt(amount) || 0;
+        setTotal((p * a).toFixed(2));
       }
     } else {
-      // LIMIT 모드일 때는 무조건 limitPrice
-      setLimitPrice(String(price))
-      const p = parseFloat(String(price)) || 0
-      const a = parseFloat(amount) || 0
-      setTotal((p * a).toFixed(2))
+      // limit 모드
+      setLimitPrice(String(price));
+      const p = parseFloat(String(price)) || 0;
+      const a = parseInt(amount) || 0;
+      setTotal((p * a).toFixed(2));
     }
-  }
+  };
 
   return (
     <div className="w-full h-full">
@@ -101,6 +100,8 @@ export default function Home() {
                   balance={balance}
                   focusedInput={focusedInput}
                   setFocusedInput={setFocusedInput}
+                  // 소수점 불가 NFT
+                  isNFT={true}
                 />
               </div>
             </div>
@@ -115,5 +116,5 @@ export default function Home() {
         </div>
       </Split>
     </div>
-  )
+  );
 }
