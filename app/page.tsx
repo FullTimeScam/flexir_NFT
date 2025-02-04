@@ -50,7 +50,7 @@ export default function Home() {
       <Split
         className="flex flex-col h-full"
         direction="vertical"
-        sizes={[90, 10]}
+        sizes={[75, 25]}
         minSize={[200, 100]}
         gutterSize={6}
       >
@@ -72,7 +72,7 @@ export default function Home() {
           <Split
             className="flex flex-col h-full"
             direction="vertical"
-            sizes={[20, 80]}
+            sizes={[30, 70]}
             minSize={[100, 100]}
             gutterSize={6}
           >
